@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Илья Колосов](https://up.htmlacademy.ru/javascript/11/user/431953).
-* Наставник: [Евгений Сальников] (https://htmlacademy.ru/profile/id24537).
+* Наставник: [Евгений Сальников](https://htmlacademy.ru/profile/id24537).
 
 ---
 
