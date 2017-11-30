@@ -2,9 +2,6 @@
 
 var AD_PARAMS = {
   NUMBER: 8,
-  /* "author": {
-      "avatar": строка, адрес изображения вида img/avatars/user{{xx}}.png, где xx это число от 1 до 8 с ведущим нулем.
-      Например 01, 02 и т. д. Адреса изображений не повторяются}, */
   TITLE: [
     'Большая уютная квартира',
     'Маленькая неуютная квартира',
@@ -14,7 +11,6 @@ var AD_PARAMS = {
     'Некрасивый негостеприимный домик',
     'Уютное бунгало далеко от моря',
     'Неуютное бунгало по колено в воде'],
-  /* "address": строка, адрес предложения, представляет собой запись вида "{{location.x}}, {{location.y}}" */
   PRICE: {
     MIN: 1000,
     MAX: 1000000
@@ -27,7 +23,10 @@ var AD_PARAMS = {
     MIN: 1,
     MAX: 5
   },
-  /* "guests": число, случайное количество гостей, которое можно разместить */
+  GUESTS: {
+    MIN: 1,
+    MAX: 10
+  },
   CHECKIN: [
     '12:00',
     '13:00',
@@ -43,8 +42,6 @@ var AD_PARAMS = {
     'washer',
     'elevator',
     'conditioner'],
-  /* "description": пустая строка, */
-  /* "photos": пустой массив */
   LOCATION: {
     X: {
       MIN: 300,
@@ -54,54 +51,91 @@ var AD_PARAMS = {
       MIN: 100,
       MAX: 500
     }
+  },
+  PIN: {
+    WIDTH: 65,
+    HEIGHT: 87 /* Ширина = батон + псевдоэлмент конус */
   }
 };
 
-var adArray = [];
-var adObject = {};
+var showElement = function () {
+  var map = document.querySelector('.map');
+  map.classList.remove('map--faded');
+};
 
-var getRandomValue = function(minValue, maxValue) {
+var getRandomValue = function (minValue, maxValue) {
   return Math.round(Math.random() * (maxValue - minValue) + minValue);
-}
+};
 
-var getRandomArray = function(array, items) {
+var getRandomArray = function (array, items) {
   array.sort(compareRandom);
   var newArray = [];
   for (var i = 0; i < items; i++) {
-      newArray.push(array[i]);
-    }
+    newArray.push(array[i]);
+  }
   return newArray;
 };
 
-var compareRandom = function() {
+var compareRandom = function () {
   return Math.random() - 0.5;
 };
 
-var generateAdArray = function () {
+var adObject = {};
+var adArray = [];
+
+var createAdArray = function () {
   for (var i = 0; i < AD_PARAMS.NUMBER; i++) {
+    var x = getRandomValue(AD_PARAMS.LOCATION.X.MIN, AD_PARAMS.LOCATION.X.MAX);
+    var y = getRandomValue(AD_PARAMS.LOCATION.Y.MIN, AD_PARAMS.LOCATION.Y.MAX);
+
     adObject = {
       author: {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
-    },
-
+      },
       offer: {
         title: AD_PARAMS.TITLE[i],
-        address: строка, адрес предложения, представляет собой запись вида "{{location.x}}, {{location.y}}",
+        address: x + ',' + y,
         price: getRandomValue(AD_PARAMS.PRICE.MIN, AD_PARAMS.PRICE.MAX),
-        type: AD_PARAMS.TYPE[getRandomValue(1, AD_PARAMS.TYPE.length)],
+        type: AD_PARAMS.TYPE[getRandomValue(0, AD_PARAMS.TYPE.length - 1)],
         rooms: getRandomValue(AD_PARAMS.ROOMS.MIN, AD_PARAMS.ROOMS.MAX),
-        guests: число, случайное количество гостей, которое можно разместить
-        checkin: строка с одним из трех фиксированных значений: 12:00, 13:00 или 14:00,
-        checkout: строка с одним из трех фиксированных значений: 12:00, 13:00 или 14:00
-        features: массив строк случайной длины из ниже предложенных: "wifi", "dishwasher", "parking", "washer", "elevator", "conditioner",
+        guests: getRandomValue(AD_PARAMS.GUESTS.MIN, AD_PARAMS.GUESTS.MAX),
+        checkin: AD_PARAMS.CHECKIN[getRandomValue(0, AD_PARAMS.CHECKIN.length - 1)],
+        checkout: AD_PARAMS.CHECKOUT[getRandomValue(0, AD_PARAMS.CHECKOUT.length - 1)],
+        features: getRandomArray(AD_PARAMS.FEATURES, getRandomValue(0, AD_PARAMS.FEATURES.length - 1)),
         description: '',
         photos: []
       },
-
-      location {
-        x: getRandomValue(300, 900),
-        y: getRandomValue(100, 500)
+      location: {
+        x: x,
+        y: y
       }
-    }
+    };
+    adArray.push(adObject);
   }
-}
+};
+
+var renderMapPin = function (index) {
+  var mapPinTemplate = document.querySelector('.map__pin');
+  var mapPin = mapPinTemplate.cloneNode(true);
+  var mapPinImg = mapPin.querySelector('img');
+
+  mapPin.setAttribute('style', 'left:' + (adArray[index].location.x - AD_PARAMS.PIN.WIDTH / 2) + 'px; top:' + (adArray[index].location.y - AD_PARAMS.PIN.HEIGHT) + 'px;');
+  mapPinImg.setAttribute('src', adArray[index].author.avatar);
+
+  return mapPin;
+};
+
+var createMapPins = function () {
+  var mapPins = document.querySelector('.map__pins');
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < adArray.length; i++) {
+    fragment.appendChild(renderMapPin(i));
+  }
+  mapPins.appendChild(fragment);
+};
+
+
+showElement();
+createAdArray();
+createMapPins();
