@@ -58,11 +58,14 @@ var AD_PARAMS = {
   }
 };
 
+var mapCardTemplate = document.querySelector('template').content; /* разобраться с этой фигней*/
+var mapCard = mapCardTemplate.cloneNode(true);
+
 var showElement = function () {
   var map = document.querySelector('.map');
   map.classList.remove('map--faded');
 };
-
+/* Функции для рандомной выборки */
 var getRandomValue = function (minValue, maxValue) {
   return Math.round(Math.random() * (maxValue - minValue) + minValue);
 };
@@ -135,7 +138,53 @@ var createMapPins = function () {
   mapPins.appendChild(fragment);
 };
 
+var definitionType = function (type) {
+  var valueType = '';
+
+  if (type === 'flat') {
+    valueType = 'Квартира';
+  }
+  if (type === 'bungalo') {
+    valueType = 'Бунгало';
+  }
+  if (type === 'house') {
+    valueType = 'Дом';
+  }
+  return valueType;
+};
+
+var getFeature = function (features) {
+  var featureListFragment = document.createDocumentFragment();
+  for (var i = 0; i < features.length; i++) {
+    var featureListNewElement = document.createElement('li');
+    featureListNewElement.className = 'feature feature--' + features[i];
+    featureListFragment.appendChild(featureListNewElement);
+  }
+  return featureListFragment;
+};
+
+var renderFeatures = function (arrayFeatures) {
+  var featureList = mapCard.querySelector('ul');
+  featureList.innerHTML = '';
+  featureList.appendChild(getFeature(arrayFeatures));
+};
+
+var createMapCard = function (object) {
+  var mapCardText = mapCard.querySelectorAll('p');
+
+  mapCard.querySelector('h3').textContent = object.offer.title;
+  mapCard.querySelector('small').textContent = object.offer.address;
+  mapCard.querySelector('.popup__price').textContent = object.offer.price + '&#x20bd;/ночь';
+  mapCard.querySelector('h4').textContent = definitionType(object.offer.type);
+  mapCardText[2].textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей';
+  mapCardText[3].textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
+  renderFeatures(object.offer.features);
+  mapCardText[4].textContent = object.offer.description;
+  mapCard.querySelector('.popup__features').setAttribute('src', object.author.avatar);
+};
+
 
 showElement();
 createAdArray();
 createMapPins();
+createMapCard(adArray[0]);
