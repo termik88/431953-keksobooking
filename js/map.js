@@ -58,18 +58,23 @@ var AD_PARAMS = {
   }
 };
 
-var mapCardTemplate = document.querySelector('template').content; /* разобраться с этой фигней*/
+var map = document.querySelector('.map');
+var adArray = [];
+
+var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 var mapCard = mapCardTemplate.cloneNode(true);
 
+/* Функция отображения окна*/
 var showElement = function () {
-  var map = document.querySelector('.map');
   map.classList.remove('map--faded');
 };
-/* Функции для рандомной выборки */
+
+/* Функции для рандомной выборки значения из заданного диапазона */
 var getRandomValue = function (minValue, maxValue) {
   return Math.round(Math.random() * (maxValue - minValue) + minValue);
 };
 
+/* Функция для рандомного отображения элементов массива */
 var getRandomArray = function (array, items) {
   array.sort(compareRandom);
   var newArray = [];
@@ -79,14 +84,15 @@ var getRandomArray = function (array, items) {
   return newArray;
 };
 
+/* Функция задания индекса для случайной сортировки массива */
 var compareRandom = function () {
   return Math.random() - 0.5;
 };
 
-var adObject = {};
-var adArray = [];
-
+/* Функция создания массива объектов */
 var createAdArray = function () {
+  var adObject = {};
+
   for (var i = 0; i < AD_PARAMS.NUMBER; i++) {
     var x = getRandomValue(AD_PARAMS.LOCATION.X.MIN, AD_PARAMS.LOCATION.X.MAX);
     var y = getRandomValue(AD_PARAMS.LOCATION.Y.MIN, AD_PARAMS.LOCATION.Y.MAX);
@@ -118,7 +124,7 @@ var createAdArray = function () {
 };
 
 var renderMapPin = function (index) {
-  var mapPinTemplate = document.querySelector('.map__pin');
+  var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var mapPin = mapPinTemplate.cloneNode(true);
   var mapPinImg = mapPin.querySelector('img');
 
@@ -128,6 +134,7 @@ var renderMapPin = function (index) {
   return mapPin;
 };
 
+/* Фукция создания меток на карте */
 var createMapPins = function () {
   var mapPins = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
@@ -170,19 +177,20 @@ var renderFeatures = function (arrayFeatures) {
 };
 
 var createMapCard = function (object) {
+  var mapFiltersContainer = document.querySelector('.filters-container');
   var mapCardText = mapCard.querySelectorAll('p');
 
   mapCard.querySelector('h3').textContent = object.offer.title;
   mapCard.querySelector('small').textContent = object.offer.address;
-  mapCard.querySelector('.popup__price').textContent = object.offer.price + '&#x20bd;/ночь';
+  mapCard.querySelector('.popup__price').textContent = object.offer.price + ' Р/ночь';
   mapCard.querySelector('h4').textContent = definitionType(object.offer.type);
   mapCardText[2].textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей';
   mapCardText[3].textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
   renderFeatures(object.offer.features);
   mapCardText[4].textContent = object.offer.description;
   mapCard.querySelector('.popup__features').setAttribute('src', object.author.avatar);
+  map.insertBefore(mapCard, mapFiltersContainer);
 };
-
 
 showElement();
 createAdArray();
