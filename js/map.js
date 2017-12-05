@@ -71,7 +71,7 @@ var showElement = function () {
 
 /* Функции для рандомной выборки значения из заданного диапазона */
 var getRandomValue = function (minValue, maxValue) {
-  return Math.round(Math.random() * (maxValue - minValue) + minValue);
+  return Math.round(Math.random() * (maxValue - minValue + 1) + minValue - 0.5);
 };
 
 /* Функция для рандомного отображения элементов массива */
