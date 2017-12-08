@@ -139,6 +139,7 @@ var createMapPins = function () {
   mapPins.appendChild(fragment);
 };
 
+/* Функции для создания карточки */
 var definitionType = function (type) {
   var valueType = '';
 
@@ -187,7 +188,7 @@ var createMapCard = function (object) {
 };
 
 /*
-createMapCard(adArray[0]);
+createMapCard(adArray[0]); Отключена первая карточка
 */
 
 var map = document.querySelector('.map');
@@ -217,6 +218,7 @@ var openPage = function () {
 
 openPage();
 
+/* Лиснер для Главного Пина */
 mapPinMain.addEventListener('mouseup', function () {
   map.classList.remove('map--faded');
 
@@ -233,3 +235,10 @@ mapPinMain.addEventListener('mouseup', function () {
     numberClickMapPinMain++;
   }
 });
+
+/* Лиснер для пинов объявлений */
+/*
+var mapPinSub = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+mapPinSub.addEventListener('click', function () {
+  mapPinSub.classList.add('map__pin--active');
+});*/
