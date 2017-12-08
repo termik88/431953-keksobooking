@@ -58,16 +58,10 @@ var AD_PARAMS = {
   }
 };
 
-var map = document.querySelector('.map');
 var adArray = [];
 
 var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 var mapCard = mapCardTemplate.cloneNode(true);
-
-/* Функция отображения окна*/
-var showElement = function () {
-  map.classList.remove('map--faded');
-};
 
 /* Функции для рандомной выборки значения из заданного диапазона */
 var getRandomValue = function (minValue, maxValue) {
@@ -192,7 +186,50 @@ var createMapCard = function (object) {
   map.insertBefore(mapCard, mapFiltersContainer);
 };
 
-showElement();
-createAdArray();
-createMapPins();
+/*
 createMapCard(adArray[0]);
+*/
+
+var map = document.querySelector('.map');
+var mapPinMain = map.querySelector('.map__pin--main');
+var noticeForm = document.querySelector('.notice__form');
+var noticeFormDisabled = document.querySelector('.notice__form--disabled');
+var formFieldSet = noticeForm.querySelectorAll('fieldset');
+var numberClickMapPinMain = 0; /* Счетчик кликов по главному пину. Страховка под клонирования пинов объявлений */
+
+/* Функция отвечающая за загрузку страницы */
+var testContainsClass = function (object, nameClass) {
+  if (!object.classList.contains(nameClass)) {
+    object.classList.add(nameClass);
+  }
+};
+
+var openPage = function () {
+  testContainsClass(map, 'map--faded');
+  testContainsClass(noticeFormDisabled, 'notice__form--disabled');
+
+  for (var i = 0; i < formFieldSet.length; i++) {
+    if (!formFieldSet[i].hasAttribute('disabled')) {
+      formFieldSet[i].setAttribute('disabled', 'disable');
+    }
+  }
+};
+
+openPage();
+
+mapPinMain.addEventListener('mouseup', function () {
+  map.classList.remove('map--faded');
+
+  if (numberClickMapPinMain === 0) {
+    createAdArray();
+    createMapPins();
+
+    noticeForm.classList.remove('notice__form--disabled');
+    for (var i = 0; i < formFieldSet.length; i++) {
+      if (formFieldSet[i].hasAttribute('disabled')) {
+        formFieldSet[i].removeAttribute('disabled');
+      }
+    }
+    numberClickMapPinMain++;
+  }
+});
