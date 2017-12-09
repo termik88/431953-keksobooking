@@ -209,11 +209,7 @@ var renderMapPin = function (index) {
   var mapPin = mapPinTemplate.cloneNode(true);
   var mapPinImg = mapPin.querySelector('img');
 
-  mapPin.setAttribute('style', 'left:' + (adArray[index].location.x - AD_PARAMS.PIN.WIDTH / 2) + 'px; top:' + (adArray[index].location.y - AD_PARAMS.PIN.HEIGHT) + 'px;');
-  mapPinImg.setAttribute('src', adArray[index].author.avatar);
-
-  /* Лиснер нажатия на Пин */
-  mapPin.addEventListener('click', function () {
+  var openPupup = function () {
     var mapPinActive = document.querySelector('.map__pin--active');
     if (mapPinActive) {
       mapPinActive.classList.remove('map__pin--active');
@@ -221,14 +217,37 @@ var renderMapPin = function (index) {
     mapPin.classList.add('map__pin--active');
     createMapCard(adArray[index]);
     mapCard.classList.remove('hidden');
+  };
 
-    /* Лиснер для закрытия Попапа */
+  var closePopup = function () {
+    mapPin.classList.remove('map__pin--active');
+    mapCard.classList.add('hidden');
+  };
+
+  mapPin.addEventListener('click', function () {
+    openPupup();
+
     var buttonPopupClose = document.querySelector('.popup__close');
     buttonPopupClose.addEventListener('click', function () {
-      mapPin.classList.remove('map__pin--active');
-      mapCard.classList.add('hidden');
+      closePopup();
     });
   });
+
+  mapPin.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === KEY_CODE.ENTER) {
+      openPupup();
+    }
+  });
+
+  mapPin.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === KEY_CODE.ESC) {
+      closePopup();
+    }
+  });
+
+  mapPin.setAttribute('style', 'left:' + (adArray[index].location.x - AD_PARAMS.PIN.WIDTH / 2) + 'px; top:' + (adArray[index].location.y - AD_PARAMS.PIN.HEIGHT) + 'px;');
+  mapPin.classList.add('hidden');
+  mapPinImg.setAttribute('src', adArray[index].author.avatar);
 
   return mapPin;
 };
@@ -247,14 +266,18 @@ createMapPins();
 
 /* Лиснер для Главного Пина */
 mapPinMain.addEventListener('mouseup', function () {
+  var mapPinHidden = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  for (var i = 0; i < mapPinHidden.length; i++) {
+    mapPinHidden[i].classList.remove('hidden');
+  }
+
   map.classList.remove('map--faded');
 
   if (numberClickMapPinMain === 0) {
-
     noticeForm.classList.remove('notice__form--disabled');
-    for (var i = 0; i < formFieldSet.length; i++) {
-      if (formFieldSet[i].hasAttribute('disabled')) {
-        formFieldSet[i].removeAttribute('disabled');
+    for (var j = 0; j < formFieldSet.length; j++) {
+      if (formFieldSet[j].hasAttribute('disabled')) {
+        formFieldSet[j].removeAttribute('disabled');
       }
     }
     numberClickMapPinMain++;
