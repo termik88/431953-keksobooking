@@ -1,5 +1,5 @@
 'use strict';
-
+/* Константы */
 var AD_PARAMS = {
   NUMBER: 8,
   TITLE: [
@@ -57,17 +57,46 @@ var AD_PARAMS = {
     HEIGHT: 64 /* Ширина = батон + псевдоэлмент конус */
   }
 };
+var KEY_CODE = {
+  ESC: 27,
+  ENTER: 13
+};
 
+/* Переменные для функции загрузки страницы */
 var map = document.querySelector('.map');
+var mapPinMain = map.querySelector('.map__pin--main');
+var noticeForm = document.querySelector('.notice__form');
+
+/* Переменные Лиснера для Мейн Пина */
+var noticeFormDisabled = document.querySelector('.notice__form--disabled');
+var formFieldSet = noticeForm.querySelectorAll('fieldset');
+var numberClickMapPinMain = 0; /* Счетчик кликов по главному пину. Страховка под клонирования пинов объявлений */
+
+/* Переменные для генерации данных масива объектов и карточек объявлений */
 var adArray = [];
 
 var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 var mapCard = mapCardTemplate.cloneNode(true);
 
-/* Функция отображения окна*/
-var showElement = function () {
-  map.classList.remove('map--faded');
+/* Функция отвечающая за загрузку страницы */
+var testContainsClass = function (object, nameClass) {
+  if (!object.classList.contains(nameClass)) {
+    object.classList.add(nameClass);
+  }
 };
+
+var openPage = function () {
+  testContainsClass(map, 'map--faded');
+  testContainsClass(noticeFormDisabled, 'notice__form--disabled');
+
+  for (var i = 0; i < formFieldSet.length; i++) {
+    if (!formFieldSet[i].hasAttribute('disabled')) {
+      formFieldSet[i].setAttribute('disabled', 'disable');
+    }
+  }
+};
+
+openPage();
 
 /* Функции для рандомной выборки значения из заданного диапазона */
 var getRandomValue = function (minValue, maxValue) {
@@ -123,28 +152,9 @@ var createAdArray = function () {
   }
 };
 
-var renderMapPin = function (index) {
-  var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
-  var mapPin = mapPinTemplate.cloneNode(true);
-  var mapPinImg = mapPin.querySelector('img');
+createAdArray();
 
-  mapPin.setAttribute('style', 'left:' + (adArray[index].location.x - AD_PARAMS.PIN.WIDTH / 2) + 'px; top:' + (adArray[index].location.y - AD_PARAMS.PIN.HEIGHT) + 'px;');
-  mapPinImg.setAttribute('src', adArray[index].author.avatar);
-
-  return mapPin;
-};
-
-/* Фукция создания меток на карте */
-var createMapPins = function () {
-  var mapPins = document.querySelector('.map__pins');
-  var fragment = document.createDocumentFragment();
-
-  for (var i = 0; i < adArray.length; i++) {
-    fragment.appendChild(renderMapPin(i));
-  }
-  mapPins.appendChild(fragment);
-};
-
+/* Функции для создания карточки */
 var definitionType = function (type) {
   var valueType = '';
 
@@ -188,11 +198,88 @@ var createMapCard = function (object) {
   mapCardText[3].textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
   renderFeatures(object.offer.features);
   mapCardText[4].textContent = object.offer.description;
-  mapCard.querySelector('.popup__features').setAttribute('src', object.author.avatar);
+  mapCard.querySelector('.popup__avatar').setAttribute('src', object.author.avatar);
   map.insertBefore(mapCard, mapFiltersContainer);
+  mapCard.classList.add('hidden');
 };
 
-showElement();
-createAdArray();
+/* Фукция создания меток на карте */
+var renderMapPin = function (index) {
+  var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
+  var mapPin = mapPinTemplate.cloneNode(true);
+  var mapPinImg = mapPin.querySelector('img');
+
+  var openPupup = function () {
+    var mapPinActive = document.querySelector('.map__pin--active');
+    if (mapPinActive) {
+      mapPinActive.classList.remove('map__pin--active');
+    }
+    mapPin.classList.add('map__pin--active');
+    createMapCard(adArray[index]);
+    mapCard.classList.remove('hidden');
+  };
+
+  var closePopup = function () {
+    mapPin.classList.remove('map__pin--active');
+    mapCard.classList.add('hidden');
+  };
+
+  mapPin.addEventListener('click', function () {
+    openPupup();
+
+    var buttonPopupClose = document.querySelector('.popup__close');
+    buttonPopupClose.addEventListener('click', function () {
+      closePopup();
+    });
+  });
+
+  mapPin.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === KEY_CODE.ENTER) {
+      openPupup();
+    }
+  });
+
+  mapPin.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === KEY_CODE.ESC) {
+      closePopup();
+    }
+  });
+
+  mapPin.setAttribute('style', 'left:' + (adArray[index].location.x - AD_PARAMS.PIN.WIDTH / 2) + 'px; top:' + (adArray[index].location.y - AD_PARAMS.PIN.HEIGHT) + 'px;');
+  mapPin.classList.add('hidden');
+  mapPinImg.setAttribute('src', adArray[index].author.avatar);
+
+  return mapPin;
+};
+
+var createMapPins = function () {
+  var mapPins = document.querySelector('.map__pins');
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < adArray.length; i++) {
+    fragment.appendChild(renderMapPin(i));
+  }
+  mapPins.appendChild(fragment);
+};
+
 createMapPins();
-createMapCard(adArray[0]);
+
+/* Лиснер для Главного Пина */
+mapPinMain.addEventListener('mouseup', function () {
+  var mapPinHidden = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  for (var i = 0; i < mapPinHidden.length; i++) {
+    mapPinHidden[i].classList.remove('hidden');
+  }
+
+  map.classList.remove('map--faded');
+
+  if (numberClickMapPinMain === 0) {
+    noticeForm.classList.remove('notice__form--disabled');
+    for (var j = 0; j < formFieldSet.length; j++) {
+      if (formFieldSet[j].hasAttribute('disabled')) {
+        formFieldSet[j].removeAttribute('disabled');
+      }
+    }
+    numberClickMapPinMain++;
+  }
+});
