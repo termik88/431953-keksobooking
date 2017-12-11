@@ -284,20 +284,136 @@ mapPinMain.addEventListener('mouseup', function () {
   }
 });
 
+/* https://bitsofco.de/realtime-form-validation/ */
 /* Функции для работы с формой */
+/* Всплывающие подсказки поля Address */
+var validationRequired = function (object) {
+  object.setCustomValidity('Обязательное поле');
+};
+var validationNormal = function (object) {
+  object.setCustomValidity('');
+  object.removeAttribute('style');
+};
+
+var paintError = function (object) {
+  object.setAttribute('style', 'border-color: red;');
+};
+
+
 var addressInput = document.getElementById('address');
 addressInput.addEventListener('invalid', function () {
+  if (addressInput.validity.valueMissing) {
+    validationRequired(addressInput);
+  } else {
+    validationNormal(addressInput);
+  }
 });
 
-var titleInput = noticeForm.getElementById('address');
+/* Всплывающие подсказки поля Title */
+var titleInput = document.getElementById('title');
 titleInput.addEventListener('invalid', function () {
   if (titleInput.validity.tooShort) {
     titleInput.setCustomValidity('Минимальная длина — 30 символов');
+    paintError(titleInput);
   } else if (titleInput.validity.tooLong) {
     titleInput.setCustomValidity('Макcимальная длина — 100 символов');
+    paintError(titleInput);
   } else if (titleInput.validity.valueMissing) {
-    titleInput.setCustomValidity('Обязательное поле');
+    validationRequired(titleInput);
+    paintError(titleInput);
   } else {
-    titleInput.setCustomValidity('');
+    validationNormal(titleInput);
   }
+});
+
+/* Валидация по минимальной длине для EI and Edge поля Title*/
+titleInput.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length < 30) {
+    target.setCustomValidity('Минимальная длина — 30 символов');
+    paintError(target);
+  } else {
+    validationNormal(target);
+  }
+});
+
+/* Всплывающие подсказки поля Price */
+var priceInput = document.getElementById('price');
+priceInput.addEventListener('invalid', function () {
+  if (priceInput.type !== 'number') {
+    priceInput.setCustomValidity('Введи числовое значение');
+    paintError(priceInput);
+  } else if (priceInput.value < 0) {
+    priceInput.setCustomValidity('Минимальное значение — 0');
+    paintError(priceInput);
+  } else if (priceInput.value > 1000000) {
+    priceInput.setCustomValidity('Макcимальное значение — 1000000');
+    paintError(priceInput);
+  } else if (priceInput.validity.valueMissing) {
+    validationRequired(priceInput);
+    paintError(priceInput);
+  } else {
+    validationNormal(priceInput);
+  }
+});
+
+/* Функция взаимодействия временых полей */
+var timeInSelect = document.getElementById('timein');
+var timeOutSelect = document.getElementById('timeout');
+
+var temporaryConnectionInTime = function (time) {
+  if (timeInSelect.value === time) {
+    timeOutSelect.value = time;
+  }
+};
+
+var temporaryConnectionInOut = function (time) {
+  if (timeOutSelect.value === time) {
+    timeInSelect.value = time;
+  }
+};
+
+timeInSelect.addEventListener('input', function () {
+  for (var i = 0; i < AD_PARAMS.CHECKIN.length; i++) {
+    temporaryConnectionInTime(AD_PARAMS.CHECKIN[i]);
+  }
+});
+
+timeOutSelect.addEventListener('input', function () {
+  for (var i = 0; i < AD_PARAMS.CHECKOUT.length; i++) {
+    temporaryConnectionInOut(AD_PARAMS.CHECKOUT[i]);
+  }
+});
+
+/* Функция взаимодействия типа жилья и цен */
+var typesHouse = document.getElementById('type');
+
+var selectTypeHouse = function (type, price) {
+  if (typesHouse.value === type) {
+    priceInput.setAttribute('min', price);
+  }
+};
+
+typesHouse.addEventListener('input', function () {
+  selectTypeHouse('bungalo', '0');
+  selectTypeHouse('flat', '1000');
+  selectTypeHouse('house', '5000');
+  selectTypeHouse('palace', '10000');
+});
+
+/* Функция взаимодействия кол-во комнат и кол-во гостей */
+var selectNumbersRoom = document.getElementById('room_number');
+var selectCapacity = document.getElementById('capacity');
+
+var connectionRoomCapacity = function (value1, value2) {
+  if (selectNumbersRoom.value === value1) {
+    selectCapacity.value = value2;
+  }
+};
+
+selectNumbersRoom.addEventListener('input', function () {
+  connectionRoomCapacity('1', '1');
+  connectionRoomCapacity('2', '2');
+  connectionRoomCapacity('3', '3');
+  connectionRoomCapacity('100', '0');
 });
