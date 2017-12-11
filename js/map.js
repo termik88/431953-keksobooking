@@ -304,6 +304,7 @@ var addressInput = document.getElementById('address');
 addressInput.addEventListener('invalid', function () {
   if (addressInput.validity.valueMissing) {
     validationRequired(addressInput);
+    paintError(addressInput);
   } else {
     validationNormal(addressInput);
   }
@@ -391,6 +392,8 @@ var typesHouse = document.getElementById('type');
 var selectTypeHouse = function (type, price) {
   if (typesHouse.value === type) {
     priceInput.setAttribute('min', price);
+    priceInput.setCustomValidity('Минимальная стоимость ' + type + 'составляет' + price);
+    paintError(priceInput);
   }
 };
 
