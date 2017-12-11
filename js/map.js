@@ -283,3 +283,21 @@ mapPinMain.addEventListener('mouseup', function () {
     numberClickMapPinMain++;
   }
 });
+
+/* Функции для работы с формой */
+var addressInput = document.getElementById('address');
+addressInput.addEventListener('invalid', function () {
+});
+
+var titleInput = noticeForm.getElementById('address');
+titleInput.addEventListener('invalid', function () {
+  if (titleInput.validity.tooShort) {
+    titleInput.setCustomValidity('Минимальная длина — 30 символов');
+  } else if (titleInput.validity.tooLong) {
+    titleInput.setCustomValidity('Макcимальная длина — 100 символов');
+  } else if (titleInput.validity.valueMissing) {
+    titleInput.setCustomValidity('Обязательное поле');
+  } else {
+    titleInput.setCustomValidity('');
+  }
+});
