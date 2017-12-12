@@ -287,24 +287,24 @@ mapPinMain.addEventListener('mouseup', function () {
 /* https://bitsofco.de/realtime-form-validation/ */
 /* Функции для работы с формой */
 /* Всплывающие подсказки поля Address */
+var paintError = function (object) {
+  object.setAttribute('style', 'border-color: red;');
+};
+
 var validationRequired = function (object) {
   object.setCustomValidity('Обязательное поле');
+  paintError(object);
 };
+
 var validationNormal = function (object) {
   object.setCustomValidity('');
   object.removeAttribute('style');
 };
 
-var paintError = function (object) {
-  object.setAttribute('style', 'border-color: red;');
-};
-
-
 var addressInput = document.getElementById('address');
 addressInput.addEventListener('invalid', function () {
   if (addressInput.validity.valueMissing) {
     validationRequired(addressInput);
-    paintError(addressInput);
   } else {
     validationNormal(addressInput);
   }
@@ -313,15 +313,13 @@ addressInput.addEventListener('invalid', function () {
 /* Всплывающие подсказки поля Title */
 var titleInput = document.getElementById('title');
 titleInput.addEventListener('invalid', function () {
+  paintError(titleInput);
   if (titleInput.validity.tooShort) {
-    titleInput.setCustomValidity('Минимальная длина — 30 символов');
-    paintError(titleInput);
+    titleInput.setCustomValidity('Минимальная длина заголовка — 30 символов');
   } else if (titleInput.validity.tooLong) {
-    titleInput.setCustomValidity('Макcимальная длина — 100 символов');
-    paintError(titleInput);
+    titleInput.setCustomValidity('Макcимальная длина заголовка — 100 символов');
   } else if (titleInput.validity.valueMissing) {
     validationRequired(titleInput);
-    paintError(titleInput);
   } else {
     validationNormal(titleInput);
   }
@@ -330,9 +328,9 @@ titleInput.addEventListener('invalid', function () {
 /* Валидация по минимальной длине для EI and Edge поля Title*/
 titleInput.addEventListener('input', function (evt) {
   var target = evt.target;
+  paintError(target);
   if (target.value.length < 30) {
-    target.setCustomValidity('Минимальная длина — 30 символов');
-    paintError(target);
+    target.setCustomValidity('Минимальная длина заголовка — 30 символов');
   } else {
     validationNormal(target);
   }
@@ -341,18 +339,15 @@ titleInput.addEventListener('input', function (evt) {
 /* Всплывающие подсказки поля Price */
 var priceInput = document.getElementById('price');
 priceInput.addEventListener('invalid', function () {
+  paintError(priceInput);
   if (priceInput.type !== 'number') {
     priceInput.setCustomValidity('Введи числовое значение');
-    paintError(priceInput);
   } else if (priceInput.value < 0) {
     priceInput.setCustomValidity('Минимальное значение — 0');
-    paintError(priceInput);
   } else if (priceInput.value > 1000000) {
     priceInput.setCustomValidity('Макcимальное значение — 1000000');
-    paintError(priceInput);
   } else if (priceInput.validity.valueMissing) {
     validationRequired(priceInput);
-    paintError(priceInput);
   } else {
     validationNormal(priceInput);
   }
@@ -392,8 +387,12 @@ var typesHouse = document.getElementById('type');
 var selectTypeHouse = function (type, price) {
   if (typesHouse.value === type) {
     priceInput.setAttribute('min', price);
-    priceInput.setCustomValidity('Минимальная стоимость ' + type + 'составляет' + price);
-    paintError(priceInput);
+    if (priceInput.value < price) {
+      /* priceInput.setCustomValidity('Минимальная стоимость ' + type + 'составляет' + price); */
+      paintError(priceInput);
+    } else {
+      validationNormal(priceInput);
+    }
   }
 };
 
@@ -407,16 +406,31 @@ typesHouse.addEventListener('input', function () {
 /* Функция взаимодействия кол-во комнат и кол-во гостей */
 var selectNumbersRoom = document.getElementById('room_number');
 var selectCapacity = document.getElementById('capacity');
+var selectCapacityItem = selectCapacity.querySelectorAll('option');
 
-var connectionRoomCapacity = function (value1, value2) {
-  if (selectNumbersRoom.value === value1) {
-    selectCapacity.value = value2;
+selectNumbersRoom.addEventListener('click', function () { /* Лиснер для первого клика, т.к по дефолту количество гостей = 3 */
+  for (var i = 0; i < selectCapacityItem.length; i++) {
+    selectCapacityItem[i].disabled = false;
   }
-};
-
-selectNumbersRoom.addEventListener('input', function () {
-  connectionRoomCapacity('1', '1');
-  connectionRoomCapacity('2', '2');
-  connectionRoomCapacity('3', '3');
-  connectionRoomCapacity('100', '0');
+  if (selectNumbersRoom.value === '1') {
+    selectCapacity.value = selectNumbersRoom.value;
+    selectCapacityItem[0].disabled = true;
+    selectCapacityItem[1].disabled = true;
+    selectCapacityItem[3].disabled = true;
+  }
+  if (selectNumbersRoom.value === '2') {
+    selectCapacity.value = '1';
+    selectCapacityItem[0].disabled = true;
+    selectCapacityItem[3].disabled = true;
+  }
+  if (selectNumbersRoom.value === '3') {
+    selectCapacity.value = '1';
+    selectCapacityItem[3].disabled = true;
+  }
+  if (selectNumbersRoom.value === '100') {
+    selectCapacity.value = '0';
+    selectCapacityItem[0].disabled = true;
+    selectCapacityItem[1].disabled = true;
+    selectCapacityItem[2].disabled = true;
+  }
 });
