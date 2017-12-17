@@ -84,30 +84,30 @@
       };
 
       var currentCoords = {
-        x: testLocation((startCoords.x + shift.x), window.AD_PARAMS.LOCATION.X.MIN, window.AD_PARAMS.LOCATION.X.MAX),
-        y: testLocation((startCoords.y + shift.y), window.AD_PARAMS.LOCATION.Y.MIN, window.AD_PARAMS.LOCATION.Y.MAX)
+        x: testLocation((mapPinMain.offsetLeft - shift.x), 0, window.map.clientWidth),
+        y: testLocation((mapPinMain.offsetTop - shift.y), 100, window.map.clientHeight - 200)
       };
 
       mapPinMain.style.top = currentCoords.y + 'px';
-      mapPinMain.style.left = currentCoords.x - PIN_MAIN.WIDTH / 2 + 'px';
+      mapPinMain.style.left = currentCoords.x + 'px';
 
       var poinerCoords = {
         x: currentCoords.x + PIN_MAIN.WIDTH / 2,
-        y: currentCoords.y + PIN_MAIN.HEIGHT
+        y: currentCoords.y + PIN_MAIN.HEIGHT / 2
       };
 
       addressInput.value = 'x: ' + poinerCoords.x + ', y:' + poinerCoords.y;
     };
 
-    var onMouseUpMapPinMian = function (endEvt) {
+    var onMouseUpMapPinMain = function (endEvt) {
       endEvt.preventDefault();
 
       document.removeEventListener('mousemove', onMouseMoveMapPinMain);
-      document.removeEventListener('mouseup', onMouseUpMapPinMian);
+      document.removeEventListener('mouseup', onMouseUpMapPinMain);
     };
 
     document.addEventListener('mousemove', onMouseMoveMapPinMain);
-    document.addEventListener('mouseup', onMouseUpMapPinMian);
+    document.addEventListener('mouseup', onMouseUpMapPinMain);
 
   });
 
