@@ -20,9 +20,7 @@
     CHECKIN: ['12:00', '13:00', '14:00'],
     CHECKOUT: ['12:00', '13:00', '14:00'],
     FEATURES: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-    LOCATION: {X: {MIN: 300, MAX: 900}, Y: {MIN: 100, MAX: 500}},
-    PIN: {WIDTH: 43, HEIGHT: 64 /* Ширина = батон + псевдоэлмент конус */
-    }
+    LOCATION: {X: {MIN: 300, MAX: 900}, Y: {MIN: 100, MAX: 500}}
   };
 
   window.adArray = [];
