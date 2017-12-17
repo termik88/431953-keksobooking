@@ -83,9 +83,20 @@
         y: moveEvt.pageY
       };
 
-      mapPinMain.style.top = testLocation((startCoords.y + shift.y), window.AD_PARAMS.LOCATION.Y.MIN, window.AD_PARAMS.LOCATION.Y.MAX) + 'px';
-      mapPinMain.style.left = (testLocation((startCoords.x + shift.x), window.AD_PARAMS.LOCATION.X.MIN, window.AD_PARAMS.LOCATION.X.MAX) - PIN_MAIN.WIDTH / 2) + 'px';
-      addressInput.value = 'x: ' + mapPinMain.style.left + ', y:' + mapPinMain.style.top;
+      var currentCoords = {
+        x: testLocation((startCoords.x + shift.x), window.AD_PARAMS.LOCATION.X.MIN, window.AD_PARAMS.LOCATION.X.MAX),
+        y: testLocation((startCoords.y + shift.y), window.AD_PARAMS.LOCATION.Y.MIN, window.AD_PARAMS.LOCATION.Y.MAX)
+      };
+
+      mapPinMain.style.top = currentCoords.y + 'px';
+      mapPinMain.style.left = currentCoords.x + 'px';
+
+      var poinerCoords = {
+        x: currentCoords.x + PIN_MAIN.WIDTH / 2,
+        y: currentCoords.y + PIN_MAIN.HEIGHT
+      };
+
+      addressInput.value = 'x: ' + poinerCoords.x + ', y:' + poinerCoords.y;
     };
 
     var onDragEndMapPinMian = function (endEvt) {
