@@ -60,7 +60,7 @@
     var startCoords = {x: evt.clientX, y: evt.pageY};
     var addressInput = document.querySelector('#address');
 
-    var onDragMapPinMain = function (moveEvt) {
+    var onMouseMoveMapPinMain = function (moveEvt) {
       moveEvt.preventDefault();
 
       var testLocation = function (number, locationMin, locationMax) {
@@ -89,7 +89,7 @@
       };
 
       mapPinMain.style.top = currentCoords.y + 'px';
-      mapPinMain.style.left = currentCoords.x + 'px';
+      mapPinMain.style.left = currentCoords.x - PIN_MAIN.WIDTH / 2 + 'px';
 
       var poinerCoords = {
         x: currentCoords.x + PIN_MAIN.WIDTH / 2,
@@ -99,15 +99,15 @@
       addressInput.value = 'x: ' + poinerCoords.x + ', y:' + poinerCoords.y;
     };
 
-    var onDragEndMapPinMian = function (endEvt) {
+    var onMouseUpMapPinMian = function (endEvt) {
       endEvt.preventDefault();
 
-      document.removeEventListener('drag', onDragMapPinMain);
-      document.removeEventListener('dragend', onDragEndMapPinMian);
+      document.removeEventListener('mousemove', onMouseMoveMapPinMain);
+      document.removeEventListener('mouseup', onMouseUpMapPinMian);
     };
 
-    document.addEventListener('drag', onDragMapPinMain);
-    document.addEventListener('dragend', onDragEndMapPinMian);
+    document.addEventListener('mousemove', onMouseMoveMapPinMain);
+    document.addEventListener('mouseup', onMouseUpMapPinMian);
 
   });
 
