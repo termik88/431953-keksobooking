@@ -75,51 +75,27 @@
   var timeInSelect = document.querySelector('#timein');
   var timeOutSelect = document.querySelector('#timeout');
 
-  var temporaryConnectionInTime = function (time) {
-    if (timeInSelect.value === time) {
-      timeOutSelect.value = time;
-    }
+  var syncValues = function (element, value) {
+    element.value = value;
   };
 
-  var temporaryConnectionInOut = function (time) {
-    if (timeOutSelect.value === time) {
-      timeInSelect.value = time;
-    }
-  };
-
-  timeInSelect.addEventListener('input', function () {
-    for (var i = 0; i < window.AD_PARAMS.CHECKIN.length; i++) {
-      temporaryConnectionInTime(window.AD_PARAMS.CHECKIN[i]);
-    }
-  });
-
-  timeOutSelect.addEventListener('input', function () {
-    for (var i = 0; i < window.AD_PARAMS.CHECKOUT.length; i++) {
-      temporaryConnectionInOut(window.AD_PARAMS.CHECKOUT[i]);
-    }
-  });
+  window.synchronizeFields(timeInSelect, timeOutSelect, window.AD_PARAMS.CHECKIN, window.AD_PARAMS.CHECKOUT, syncValues);
+  window.synchronizeFields(timeOutSelect, timeInSelect, window.AD_PARAMS.CHECKOUT, window.AD_PARAMS.CHECKIN, syncValues);
 
   /* Функция взаимодействия типа жилья и цен */
   var typesHouse = document.querySelector('#type');
 
-  var selectTypeHouse = function (type, price) {
-    if (typesHouse.value === type) {
-      priceInput.setAttribute('min', price);
-      if (priceInput.value < price) {
-        /* priceInput.setCustomValidity('Минимальная стоимость ' + type + 'составляет' + price); */
-        paintError(priceInput);
-      } else {
-        validationNormal(priceInput);
-      }
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
+
+    if (element.value < value) {
+      paintError(element);
+    } else {
+      validationNormal(element);
     }
   };
 
-  typesHouse.addEventListener('input', function () {
-    selectTypeHouse('bungalo', '0');
-    selectTypeHouse('flat', '1000');
-    selectTypeHouse('house', '5000');
-    selectTypeHouse('palace', '10000');
-  });
+  window.synchronizeFields(typesHouse, priceInput, window.AD_PARAMS.TYPE, window.AD_PARAMS.PRICE.FIX, syncValueWithMin);
 
   /* Функция взаимодействия кол-во комнат и кол-во гостей */
   var selectNumbersRoom = document.querySelector('#room_number');
