@@ -10,38 +10,6 @@
     var mapPin = mapPinTemplate.cloneNode(true);
     var mapPinImg = mapPin.querySelector('img');
 
-    var openPupup = function () {
-      var mapPinActive = document.querySelector('.map__pin--active');
-      if (mapPinActive) {
-        mapPinActive.classList.remove('map__pin--active');
-      }
-      mapPin.classList.add('map__pin--active');
-      window.createMapCard(window.adArray[index]);
-      window.mapCard.classList.remove('hidden');
-    };
-
-    var closePopup = function () {
-      mapPin.classList.remove('map__pin--active');
-      window.mapCard.classList.add('hidden');
-    };
-
-    mapPin.addEventListener('click', function () {
-      openPupup();
-
-      var buttonPopupClose = document.querySelector('.popup__close');
-      buttonPopupClose.addEventListener('click', function () {
-        closePopup();
-      });
-    });
-
-    mapPin.addEventListener('keydown', function (evt) {
-      window.util.isEnterEvent(evt, openPupup);
-    });
-
-    mapPin.addEventListener('keydown', function (evt) {
-      window.util.isEscEvent(evt, closePopup);
-    });
-
     mapPin.setAttribute('style', 'left:' + (window.adArray[index].location.x - PIN.WIDTH / 2)
       + 'px; top:' + (window.adArray[index].location.y - PIN.HEIGHT) + 'px;');
     mapPin.classList.add('hidden');
@@ -61,6 +29,5 @@
   };
 
   createMapPins();
-
 
 })();

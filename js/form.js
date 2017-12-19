@@ -19,7 +19,7 @@
     object.removeAttribute('style');
   };
 
-  var addressInput = document.getElementById('address');
+  var addressInput = document.querySelector('#address');
   addressInput.addEventListener('invalid', function () {
     if (addressInput.validity.valueMissing) {
       validationRequired(addressInput);
@@ -29,7 +29,7 @@
   });
 
   /* Всплывающие подсказки поля Title */
-  var titleInput = document.getElementById('title');
+  var titleInput = document.querySelector('#title');
   titleInput.addEventListener('invalid', function () {
     paintError(titleInput);
     if (titleInput.validity.tooShort) {
@@ -55,7 +55,7 @@
   });
 
   /* Всплывающие подсказки поля Price */
-  var priceInput = document.getElementById('price');
+  var priceInput = document.querySelector('#price');
   priceInput.addEventListener('invalid', function () {
     paintError(priceInput);
     if (priceInput.type !== 'number') {
@@ -72,8 +72,8 @@
   });
 
   /* Функция взаимодействия временых полей */
-  var timeInSelect = document.getElementById('timein');
-  var timeOutSelect = document.getElementById('timeout');
+  var timeInSelect = document.querySelector('#timein');
+  var timeOutSelect = document.querySelector('#timeout');
 
   var temporaryConnectionInTime = function (time) {
     if (timeInSelect.value === time) {
@@ -100,7 +100,7 @@
   });
 
   /* Функция взаимодействия типа жилья и цен */
-  var typesHouse = document.getElementById('type');
+  var typesHouse = document.querySelector('#type');
 
   var selectTypeHouse = function (type, price) {
     if (typesHouse.value === type) {
@@ -122,8 +122,8 @@
   });
 
   /* Функция взаимодействия кол-во комнат и кол-во гостей */
-  var selectNumbersRoom = document.getElementById('room_number');
-  var selectCapacity = document.getElementById('capacity');
+  var selectNumbersRoom = document.querySelector('#room_number');
+  var selectCapacity = document.querySelector('#capacity');
   var selectCapacityItem = selectCapacity.querySelectorAll('option');
 
   selectNumbersRoom.addEventListener('click', function () { /* Лиснер для первого клика, т.к по дефолту количество гостей = 3 */
