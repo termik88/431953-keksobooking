@@ -16,7 +16,7 @@
         mapPinActive.classList.remove('map__pin--active');
       }
       mapPin.classList.add('map__pin--active');
-      window.createMapCard(window.adArray[index]);
+      window.showCard(window.adArray[index]);
       window.mapCard.classList.remove('hidden');
     };
 
@@ -61,6 +61,5 @@
   };
 
   createMapPins();
-
 
 })();

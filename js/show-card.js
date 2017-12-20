@@ -38,7 +38,7 @@
     featureList.appendChild(getFeature(arrayFeatures));
   };
 
-  window.createMapCard = function (object) {
+  window.showCard = function (object) {
     var mapFiltersContainer = document.querySelector('.filters-container');
     var mapCardText = window.mapCard.querySelectorAll('p');
 
