@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-
+  /*
   window.AD_PARAMS = {
     NUMBER: 8,
     TITLE: [
@@ -23,14 +23,14 @@
     LOCATION: {X: {MIN: 300, MAX: 900}, Y: {MIN: 100, MAX: 500}}
   };
 
+
   window.adArray = [];
 
-  /* Функции для рандомной выборки значения из заданного диапазона */
   var getRandomValue = function (minValue, maxValue) {
     return Math.round(Math.random() * (maxValue - minValue + 1) + minValue - 0.5);
   };
 
-  /* Функция для рандомного отображения элементов массива */
+
   var getRandomArray = function (array, items) {
     array.sort(compareRandom);
     var newArray = [];
@@ -40,12 +40,12 @@
     return newArray;
   };
 
-  /* Функция задания индекса для случайной сортировки массива */
+
   var compareRandom = function () {
     return Math.random() - 0.5;
   };
 
-  /* Функция создания массива объектов */
+
   var createAdArray = function () {
     var adObject = {};
 
@@ -80,5 +80,5 @@
   };
 
   createAdArray();
-
+*/
 })();

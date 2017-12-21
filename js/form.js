@@ -2,6 +2,11 @@
 
 (function () {
 
+  var TYPE = ['bungalo', 'flat', 'house', 'palace'];
+  var PRICE = {MIN: 1000, MAX: 1000000, FIX: [0, 1000, 5000, 10000]};
+  var CHECKIN = ['12:00', '13:00', '14:00'];
+  var CHECKOUT = ['12:00', '13:00', '14:00'];
+
   /* https://bitsofco.de/realtime-form-validation/ */
   /* Функции для работы с формой */
   /* Всплывающие подсказки поля Address */
@@ -79,8 +84,8 @@
     element.value = value;
   };
 
-  window.synchronizeFields(timeInSelect, timeOutSelect, window.AD_PARAMS.CHECKIN, window.AD_PARAMS.CHECKOUT, syncValues);
-  window.synchronizeFields(timeOutSelect, timeInSelect, window.AD_PARAMS.CHECKOUT, window.AD_PARAMS.CHECKIN, syncValues);
+  window.synchronizeFields(timeInSelect, timeOutSelect, CHECKIN, CHECKOUT, syncValues);
+  window.synchronizeFields(timeOutSelect, timeInSelect, CHECKOUT, CHECKIN, syncValues);
 
   /* Функция взаимодействия типа жилья и цен */
   var typesHouse = document.querySelector('#type');
@@ -95,7 +100,7 @@
     }
   };
 
-  window.synchronizeFields(typesHouse, priceInput, window.AD_PARAMS.TYPE, window.AD_PARAMS.PRICE.FIX, syncValueWithMin);
+  window.synchronizeFields(typesHouse, priceInput, TYPE, PRICE.FIX, syncValueWithMin);
 
   /* Функция взаимодействия кол-во комнат и кол-во гостей */
   var selectNumbersRoom = document.querySelector('#room_number');
