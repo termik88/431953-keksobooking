@@ -129,4 +129,14 @@
     }
   });
 
+  /* Функция отправки формы на сервер */
+  var noticeForm = document.querySelector('.notice__form');
+
+  noticeForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(noticeForm), function () {
+      noticeForm.reset(); /* сброс формы */
+    }, window.errorHandler); /* Тело функции в util.js */
+    evt.preventDefault();
+  });
+
 })();

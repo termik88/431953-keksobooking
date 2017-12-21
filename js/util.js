@@ -19,4 +19,16 @@
       }
     }};
 
+  /* Обработчик ошибок для работы с сервером*/
+  window.errorHandler = function (errorMessage) {
+    var errorWindow = document.createElement('div');
+    errorWindow.setAttribute('style', 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;');
+    errorWindow.style.position = 'absolute';
+    errorWindow.style.left = 0;
+    errorWindow.style.right = 0;
+    errorWindow.style.fontSize = '30px';
+    errorWindow.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', errorWindow);
+  };
+
 })();

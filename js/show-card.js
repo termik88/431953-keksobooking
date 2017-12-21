@@ -52,7 +52,7 @@
     mapCardText[4].textContent = object.offer.description;
     window.mapCard.querySelector('.popup__avatar').setAttribute('src', object.author.avatar);
     window.map.insertBefore(window.mapCard, mapFiltersContainer);
-    window.mapCard.classList.add('hidden');
+    window.mapCard.classList.add('hidden'); /*  Спорный момент */
   };
 
 })();
