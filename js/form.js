@@ -23,7 +23,6 @@
     }
   };
 
-  /* https://bitsofco.de/realtime-form-validation/ */
   /* Функции для работы с формой */
   /* Всплывающие подсказки поля Address */
   var paintError = function (object) {
@@ -42,11 +41,7 @@
 
   var addressInput = document.querySelector('#address');
   addressInput.addEventListener('invalid', function () {
-    if (addressInput.validity.valueMissing) {
-      validationRequired(addressInput);
-    } else {
-      validationNormal(addressInput);
-    }
+    return addressInput.validity.valueMissing ? validationRequired(addressInput) : validationNormal(addressInput);
   });
 
   /* Всплывающие подсказки поля Title */
@@ -108,12 +103,7 @@
 
   var syncValueWithMin = function (element, value) {
     element.min = value;
-
-    if (element.value < value) {
-      paintError(element);
-    } else {
-      validationNormal(element);
-    }
+    return element.value < value ? paintError(element) : validationNormal(element);
   };
 
   window.synchronizeFields(typesHouse, priceInput, TYPES_ACCOMMODATION, PRICES_LIMIT.FIX, syncValueWithMin);
@@ -123,7 +113,7 @@
   var selectCapacity = document.querySelector('#capacity');
   var selectCapacityItem = selectCapacity.querySelectorAll('option');
 
-  selectNumbersRoom.addEventListener('click', function () { /* Лиснер для первого клика, т.к по дефолту количество гостей = 3 */
+  selectNumbersRoom.addEventListener('click', function () {
     for (var i = 0; i < selectCapacityItem.length; i++) {
       selectCapacityItem[i].disabled = false;
     }
@@ -153,8 +143,8 @@
   /* Функция отправки формы на сервер */
   noticeForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(noticeForm), function () {
-      noticeForm.reset(); /* сброс формы */
-    }, window.util.errorHandler); /* Тело функции в util.js */
+      noticeForm.reset();
+    }, window.util.errorHandler);
     evt.preventDefault();
   });
 
