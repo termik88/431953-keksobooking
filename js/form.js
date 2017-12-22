@@ -2,10 +2,26 @@
 
 (function () {
 
-  var TYPE = ['bungalo', 'flat', 'house', 'palace'];
-  var PRICE = {MIN: 1000, MAX: 1000000, FIX: [0, 1000, 5000, 10000]};
-  var CHECKIN = ['12:00', '13:00', '14:00'];
-  var CHECKOUT = ['12:00', '13:00', '14:00'];
+  var TYPES_ACCOMMODATION = ['bungalo', 'flat', 'house', 'palace'];
+  var PRICES_LIMIT = {MIN: 1000, MAX: 1000000, FIX: [0, 1000, 5000, 10000]};
+  var CHECK_IN = ['12:00', '13:00', '14:00'];
+  var CHECK_OUT = ['12:00', '13:00', '14:00'];
+
+  var noticeForm = document.querySelector('.notice__form');
+  var formFieldSet = document.querySelectorAll('fieldset');
+  var numberClickMapPinMain = 0;
+
+  window.activeForm = function () {
+    if (numberClickMapPinMain === 0) {
+      noticeForm.classList.remove('notice__form--disabled');
+      for (var j = 0; j < formFieldSet.length; j++) {
+        if (formFieldSet[j].hasAttribute('disabled')) {
+          formFieldSet[j].removeAttribute('disabled');
+        }
+      }
+      numberClickMapPinMain++;
+    }
+  };
 
   /* https://bitsofco.de/realtime-form-validation/ */
   /* Функции для работы с формой */
@@ -38,9 +54,9 @@
   titleInput.addEventListener('invalid', function () {
     paintError(titleInput);
     if (titleInput.validity.tooShort) {
-      titleInput.setCustomValidity('Минимальная длина заголовка — 30 символов');
+      titleInput.setCustomValidity('Минимальная длина заголовка — ' + titleInput.minLength + ' символов');
     } else if (titleInput.validity.tooLong) {
-      titleInput.setCustomValidity('Макcимальная длина заголовка — 100 символов');
+      titleInput.setCustomValidity('Макcимальная длина заголовка — ' + titleInput.maxLength + ' символов');
     } else if (titleInput.validity.valueMissing) {
       validationRequired(titleInput);
     } else {
@@ -52,8 +68,8 @@
   titleInput.addEventListener('input', function (evt) {
     var target = evt.target;
     paintError(target);
-    if (target.value.length < 30) {
-      target.setCustomValidity('Минимальная длина заголовка — 30 символов');
+    if (target.value.length < titleInput.minLength) {
+      target.setCustomValidity('Минимальная длина заголовка — ' + titleInput.minLength + ' символов');
     } else {
       validationNormal(target);
     }
@@ -65,10 +81,10 @@
     paintError(priceInput);
     if (priceInput.type !== 'number') {
       priceInput.setCustomValidity('Введи числовое значение');
-    } else if (priceInput.value < 0) {
-      priceInput.setCustomValidity('Минимальное значение — 0');
-    } else if (priceInput.value > 1000000) {
-      priceInput.setCustomValidity('Макcимальное значение — 1000000');
+    } else if (priceInput.value < PRICES_LIMIT.MIN) {
+      priceInput.setCustomValidity('Минимальное значение — ' + PRICES_LIMIT.MIN);
+    } else if (priceInput.value > PRICES_LIMIT.MAX) {
+      priceInput.setCustomValidity('Макcимальное значение — ' + PRICES_LIMIT.MAX);
     } else if (priceInput.validity.valueMissing) {
       validationRequired(priceInput);
     } else {
@@ -84,8 +100,8 @@
     element.value = value;
   };
 
-  window.synchronizeFields(timeInSelect, timeOutSelect, CHECKIN, CHECKOUT, syncValues);
-  window.synchronizeFields(timeOutSelect, timeInSelect, CHECKOUT, CHECKIN, syncValues);
+  window.synchronizeFields(timeInSelect, timeOutSelect, CHECK_IN, CHECK_OUT, syncValues);
+  window.synchronizeFields(timeOutSelect, timeInSelect, CHECK_OUT, CHECK_IN, syncValues);
 
   /* Функция взаимодействия типа жилья и цен */
   var typesHouse = document.querySelector('#type');
@@ -100,7 +116,7 @@
     }
   };
 
-  window.synchronizeFields(typesHouse, priceInput, TYPE, PRICE.FIX, syncValueWithMin);
+  window.synchronizeFields(typesHouse, priceInput, TYPES_ACCOMMODATION, PRICES_LIMIT.FIX, syncValueWithMin);
 
   /* Функция взаимодействия кол-во комнат и кол-во гостей */
   var selectNumbersRoom = document.querySelector('#room_number');
@@ -135,12 +151,10 @@
   });
 
   /* Функция отправки формы на сервер */
-  var noticeForm = document.querySelector('.notice__form');
-
   noticeForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(noticeForm), function () {
       noticeForm.reset(); /* сброс формы */
-    }, window.errorHandler); /* Тело функции в util.js */
+    }, window.util.errorHandler); /* Тело функции в util.js */
     evt.preventDefault();
   });
 

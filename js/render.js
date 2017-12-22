@@ -1,14 +1,13 @@
 'use strict';
 
-/* Фукция создания меток на карте */
 (function () {
-
   var PIN = {WIDTH: 43, HEIGHT: 64}; /* Ширина = батон + псевдоэлмент конус */
 
-  var renderMapPin = function (ad) {
+  window.renderAd = function (ad) {
     var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
     var mapPin = mapPinTemplate.cloneNode(true);
     var mapPinImg = mapPin.querySelector('img');
+    mapPin.classList.remove('hidden');
 
     var openPupup = function () {
       var mapPinActive = document.querySelector('.map__pin--active');
@@ -44,23 +43,9 @@
 
     mapPin.setAttribute('style', 'left:' + (ad.location.x - PIN.WIDTH / 2)
       + 'px; top:' + (ad.location.y - PIN.HEIGHT) + 'px;');
-    mapPin.classList.add('hidden');
     mapPinImg.setAttribute('src', ad.author.avatar);
 
     return mapPin;
   };
-
-  /* Отображение пинов */
-  var mapPins = document.querySelector('.map__pins');
-  var createMapPins = function (ads) {
-    var fragment = document.createDocumentFragment();
-
-    for (var i = 0; i < ads.length; i++) {
-      fragment.appendChild(renderMapPin(ads[i]));
-    }
-    mapPins.appendChild(fragment);
-  };
-
-  window.backend.load(createMapPins, window.errorHandler);
 
 })();

@@ -8,18 +8,7 @@
 
   /* Функции для создания карточки */
   var definitionType = function (type) {
-    var valueType = '';
-
-    if (type === 'flat') {
-      valueType = 'Квартира';
-    }
-    if (type === 'bungalo') {
-      valueType = 'Бунгало';
-    }
-    if (type === 'house') {
-      valueType = 'Дом';
-    }
-    return valueType;
+    return (type === 'flat' ? 'Квартира' : '') || (type === 'bungalo' ? 'Бунгало' : '') || (type === 'house' ? 'Дом' : '');
   };
 
   var getFeature = function (features) {
@@ -52,7 +41,10 @@
     mapCardText[4].textContent = object.offer.description;
     window.mapCard.querySelector('.popup__avatar').setAttribute('src', object.author.avatar);
     window.map.insertBefore(window.mapCard, mapFiltersContainer);
-    window.mapCard.classList.add('hidden'); /*  Спорный момент */
+  };
+
+  window.hiddenCard = function () {
+    window.mapCard.classList.add('hidden');
   };
 
 })();
