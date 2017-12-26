@@ -3,9 +3,9 @@
 (function () {
 
   var TYPE_ACCOMMODATION = {
-    flat: 'Квартира',
-    bungalo: 'Бунгало',
-    house: 'Дом'
+    'flat': 'Квартира',
+    'bungalo': 'Бунгало',
+    'house': 'Дом'
   };
 
   /* Переменные для генерации карточек объявлений */
