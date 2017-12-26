@@ -144,6 +144,7 @@
   noticeForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(noticeForm), function () {
       noticeForm.reset();
+      window.resetLocationMainPin();
     }, window.util.errorHandler);
     evt.preventDefault();
   });
