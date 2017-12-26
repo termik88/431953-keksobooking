@@ -3,7 +3,9 @@
 /* Фукция создания меток на карте */
 (function () {
   var PIN_MAIN = {WIDTH: 62, HEIGHT: 84};
+  var DEFAULT_LOCATIONS = {X: 631, Y: 417};
   var MAX_LIMIT_PINS = 5;
+  var clickLimit = 0;
 
   var pinsArr = [];
   var showPin = [];
@@ -59,8 +61,17 @@
       addressInput.value = 'x: ' + poinerCoords.x + ', y:' + poinerCoords.y;
     };
 
+    window.resetLocationMainPin = function () {
+      mapPinMain.style.top = DEFAULT_LOCATIONS.Y - PIN_MAIN.HEIGHT / 2 + 'px';
+      mapPinMain.style.left = DEFAULT_LOCATIONS.X - PIN_MAIN.WIDTH / 2 + 'px';
+    };
+
     var onMouseUpMapPinMain = function (endEvt) {
-      window.backend.load(successHandler, window.util.errorHandler);
+      if (clickLimit === 0) {
+        window.backend.load(successHandler, window.util.errorHandler);
+        clickLimit++;
+      }
+
       endEvt.preventDefault();
 
       document.removeEventListener('mousemove', onMouseMoveMapPinMain);
@@ -91,7 +102,6 @@
   };
 
   filters.addEventListener('change', function () {
-    updateMap();
     window.util.debounce(updateMap);
   });
 
@@ -108,7 +118,7 @@
 
   var successHandler = function (array) {
     pinsArr = array.slice();
-    showPin = pinsArr.slice(MAX_LIMIT_PINS); /* тесты */
+    showPin = pinsArr.slice(MAX_LIMIT_PINS);
     mapPins.appendChild(createFragment(showPin));
   };
 
