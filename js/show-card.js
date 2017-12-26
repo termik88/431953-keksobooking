@@ -2,14 +2,15 @@
 
 (function () {
 
+  var TYPE_ACCOMMODATION = {
+    flat: 'Квартира',
+    bungalo: 'Бунгало',
+    house: 'Дом'
+  };
+
   /* Переменные для генерации карточек объявлений */
   var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
   window.mapCard = mapCardTemplate.cloneNode(true);
-
-  /* Функции для создания карточки */
-  var definitionType = function (type) {
-    return (type === 'flat' ? 'Квартира' : '') || (type === 'bungalo' ? 'Бунгало' : '') || (type === 'house' ? 'Дом' : '');
-  };
 
   var getFeature = function (features) {
     var featureListFragment = document.createDocumentFragment();
@@ -34,7 +35,7 @@
     window.mapCard.querySelector('h3').textContent = object.offer.title;
     window.mapCard.querySelector('small').textContent = object.offer.address;
     window.mapCard.querySelector('.popup__price').textContent = object.offer.price + ' Р/ночь';
-    window.mapCard.querySelector('h4').textContent = definitionType(object.offer.type);
+    window.mapCard.querySelector('h4').textContent = TYPE_ACCOMMODATION[object.offer.type];
     mapCardText[2].textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей';
     mapCardText[3].textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
     renderFeatures(object.offer.features);
