@@ -1,6 +1,5 @@
 'use strict';
 
-/* Функция синхронизации данных */
 (function () {
 
   window.synchronizeFields = function (objectOne, objectTwo, valuesObjectOne, valuesObjectTwo, callBackFunction) {
