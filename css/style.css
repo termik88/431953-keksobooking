@@ -726,7 +726,12 @@ textarea:focus
     color: #ff5635;
 }
 
-.form__photo-container
+.form__photo-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form__photo-container .upload
 {
     width: 140px;
 }
