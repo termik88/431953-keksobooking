@@ -145,6 +145,7 @@
     window.backend.save(new FormData(noticeForm), function () {
       noticeForm.reset();
       window.resetLocationMainPin();
+      window.resetPhotosForm();
     }, window.util.errorHandler);
     evt.preventDefault();
   });
