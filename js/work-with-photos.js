@@ -29,6 +29,7 @@
     newPhoto.style.height = OPTIONS_PHOTO.HEIGHT;
     newPhoto.style.marginRight = OPTIONS_PHOTO.MARGIN_LEFT;
     newPhoto.style.marginBottom = OPTIONS_PHOTO.MARGIN_BOTTOM;
+    newPhoto.classList.add('photo-accommodation');
     newPhoto.classList.add('drop-zone');
     newPhoto.src = reader.result;
   };
@@ -87,5 +88,14 @@
     evt.preventDefault();
     photoAccommodation.chooser.files = evt.dataTransfer.files;
   });
+
+  window.resetPhotosForm = function () {
+    var allPhotosAccommodation = photoAccommodation.photosBlock.querySelectorAll('.photo-accommodation');
+    allPhotosAccommodation.forEach(function (photo) {
+      photoAccommodation.photosBlock.removeChild(photo);
+    });
+
+    avatar.preview.setAttribute('src', 'img/muffin.png');
+  };
 
 })();
