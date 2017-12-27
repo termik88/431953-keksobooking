@@ -22,26 +22,22 @@
     chooser: document.querySelector('.form__photo-container input[type=file]')
   };
 
-  avatar.chooser.addEventListener('change', function () {
-    var file = avatar.chooser.files[0];
-    var fileName = file.name.toLowerCase();
+  var loadPhotosAccommodation = function (reader) {
+    var newPhoto = document.createElement('img');
+    photoAccommodation.photosBlock.insertBefore(newPhoto, photoAccommodation.upLoadBlock);
+    newPhoto.style.width = OPTIONS_PHOTO.WIDTH;
+    newPhoto.style.height = OPTIONS_PHOTO.HEIGHT;
+    newPhoto.style.marginRight = OPTIONS_PHOTO.MARGIN_LEFT;
+    newPhoto.style.marginBottom = OPTIONS_PHOTO.MARGIN_BOTTOM;
+    newPhoto.classList.add('drop-zone');
+    newPhoto.src = reader.result;
+  };
 
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
+  var loadPhotoAvatar = function (reader) {
+    avatar.preview.src = reader.result;
+  };
 
-    if (matches) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        avatar.preview.src = reader.result;
-      });
-
-      reader.readAsDataURL(file);
-    }
-  });
-
-  var loadPhotos = function (item) {
+  var loadPhoto = function (item, fuctionLoadPhotos) {
     var file = item;
     var fileName = file.name.toLowerCase();
 
@@ -53,24 +49,25 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        var newPhoto = document.createElement('img');
-        photoAccommodation.photosBlock.insertBefore(newPhoto, photoAccommodation.upLoadBlock);
-        newPhoto.style.width = OPTIONS_PHOTO.WIDTH;
-        newPhoto.style.height = OPTIONS_PHOTO.HEIGHT;
-        newPhoto.style.marginRight = OPTIONS_PHOTO.MARGIN_LEFT;
-        newPhoto.style.marginBottom = OPTIONS_PHOTO.MARGIN_BOTTOM;
-        newPhoto.classList.add('drop-zone');
-        newPhoto.src = reader.result;
+        fuctionLoadPhotos(reader);
       });
 
       reader.readAsDataURL(file);
     }
   };
 
-  photoAccommodation.chooser.addEventListener('change', function () {
-    for (var i = 0; i < photoAccommodation.chooser.files.length; i++) {
-      loadPhotos(photoAccommodation.chooser.files[i]);
+  var countNumberPhotos = function (photos, processingFunction) {
+    for (var i = 0; i < photos.length; i++) {
+      loadPhoto(photos[i], processingFunction);
     }
+  };
+
+  avatar.chooser.addEventListener('change', function () {
+    countNumberPhotos(avatar.chooser.files, loadPhotoAvatar);
+  });
+
+  photoAccommodation.chooser.addEventListener('change', function () {
+    countNumberPhotos(photoAccommodation.chooser.files, loadPhotosAccommodation);
   });
 
   avatar.dropZone.addEventListener('dragover', function (evt) {
